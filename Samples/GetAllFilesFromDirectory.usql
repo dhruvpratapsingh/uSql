@@ -1,0 +1,17 @@
+@searchlog =
+    EXTRACT Date           string,
+            Id             string,
+            Region         string,
+            FileType       string,
+
+    FROM "/eventhub/{*}"
+    USING Extractors.Text();
+
+@res = SELECT Id
+    , COUNT(*) AS filetcount
+    FROM @searchlog
+    GROUP BY Id;
+
+OUTPUT @res
+    TO "/Output/SearchLog-from-Evenhub.csv"
+USING Outputters.Csv();
